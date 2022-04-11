@@ -68,16 +68,17 @@ module DE10_LITE_Golden_Top(
 //  REG/WIRE declarations
 //=======================================================
 
-
-
+reg led = 0;
+reg [25:0]counter; 
 
 //=======================================================
 //  Structural coding
 //=======================================================
 
-assign LEDR[0] = SW[0] & SW[1]; //Turn on LED 0 if switches 1 and 2 are flipped.
+assign LEDR[0] = led; //LED 0 blinks every second (50MHz clock).
 assign LEDR[1] = ~KEY[0] | ~KEY[1]; //Allow keys 1 and 0 to turn on LED 1. 
 
+//Turn off 8 seg LEDs
 assign HEX0 = 8'hFF;
 assign HEX1 = 8'hFF;
 assign HEX2 = 8'hFF;
@@ -85,4 +86,17 @@ assign HEX3 = 8'hFF;
 assign HEX4 = 8'hFF;
 assign HEX5 = 8'hFF;
 
+always @(posedge MAX10_CLK1_50)
+begin
+	if(counter == 50000000)
+		begin
+			counter <= 1'b1;
+			led <= ~led;
+		end
+	else
+		begin
+			counter <= counter + 1'b1;
+		end
+end
+	
 endmodule
